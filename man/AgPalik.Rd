@@ -14,6 +14,6 @@
 data(AgPalik)
 str(AgPalik$raw())
 AgPalik$comment
-\dontrun{demo(AgPalik)}
+demo(AgPalik)
 }
 \keyword{datasets}

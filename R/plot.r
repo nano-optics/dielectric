@@ -5,6 +5,7 @@
 ##' @param m data.frame with wavelength and complex epsilon
 ##' @return long format data.frame
 ##' @author baptiste Auguié
+##' @export
 dielectric2plot <- function(m){
 
   dwide <- with(m, data.frame(wavelength,

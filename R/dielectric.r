@@ -2,15 +2,21 @@
 dielectric <- setRefClass("dielectric",
                           fields = list( wavelength = "vector",
                             epsilon = "vector",
+                            span="vector", 
                             comment = "list"),
                           methods = list(
+                            set_span = function(min=NULL, max=NULL){
+                              if(is.null(min)) min <- min(wavelength)
+                              if(is.null(max)) max <- max(wavelength)
+                              span <<- c(min, max)
+                            }, 
                             ##' spline interpolation of permittivity
                             ##'
                             ##' spline interpolation of permittivity
                             ##' @title spline
                             ##' @param ... 
                             ##' @return list
-                            ##' @author baptiste Auguié
+                            ##' @author baptiste Auguie
                             spline = function(...) {
                               'returns a list of splinefun for the real and imaginary parts'
                               sp <- 
@@ -18,16 +24,17 @@ dielectric <- setRefClass("dielectric",
                                      imag=smooth.spline(wavelength, Im(epsilon), ...))
                               invisible(sp)
                             },
-                            raw = function(){
+                            raw = function(range=span){
                               'return the raw data as real numbers'
-                            data.frame(wavelength=wavelength,
-                                       epsilon=epsilon, real = Re(epsilon), imag=Im(epsilon))
+                            subset(data.frame(wavelength=wavelength,
+                                       epsilon=epsilon, real = Re(epsilon), imag=Im(epsilon)),
+                                   wavelength < range[2] & wavelength > range[1])
                           },
                             permittivity = function(new.wavelength, ...){
                               'predict a single value'
                               predict(range=rep(new.wavelength, 2), n=1, ...)
                               },
-                            predict = function(sp=NULL, range=c(0.4, 0.8),
+                            predict = function(sp=NULL, range=span,
                               n=length(epsilon), new.wavelength=NULL,...)
                             {
                               'interpolation with splines'

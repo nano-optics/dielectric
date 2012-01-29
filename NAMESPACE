@@ -1,2 +1,3 @@
-import(methods)
-exportPattern("^[^\\.]")
+export(dielectric2plot)
+export(drude)
+export(fitDrude)
