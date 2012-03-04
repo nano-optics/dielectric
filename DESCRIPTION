@@ -8,6 +8,7 @@ LazyLoad: yes
 LazyData: yes
 Author: Baptiste Auguie
 Description: Physical constants. Gold, silver and glass permittivities,
+<<<<<<< HEAD
     together with spline interpolation functions.
 Version: 0.2
 Date: 2012-03-04
@@ -22,3 +23,12 @@ Collate:
     'plot.r'
     'zzz.r'
     'drude.r'
+=======
+        together with spline interpolation functions.
+Version: 0.1
+Date: 2011-07-26
+Depends: R (>= 2.13), methods
+Suggests: ggplot2
+Collate: 'conversions.R' 'dielectric.r' 'plot.r' 'zzz.r'
+
+>>>>>>> mistake
