@@ -1,13 +1,20 @@
 \name{t2eV}
 \alias{t2eV}
 \title{t2eV}
-\usage{t2eV(time)}
-
-\description{Conversion between different units}
-\details{Conversion between different units}
-\value{numeric vector}
-\author{baptiste Auguie}
-\arguments{\item{time}{numeric vector, time in s}}
-
-
+\usage{
+  t2eV(time)
+}
+\arguments{
+  \item{time}{time in s}
+}
+\description{
+  Unit conversions
+}
+\details{
+  Unit conversions
+}
+\seealso{
+  Other conversion: \code{\link{eV2L}}, \code{\link{L2eV}},
+  \code{\link{L2w}}
+}
 

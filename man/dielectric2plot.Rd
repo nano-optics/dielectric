@@ -17,6 +17,6 @@
   Conversion to long format data.frame for plotting
 }
 \author{
-  baptiste Auguié
+  baptiste Auguie
 }
 

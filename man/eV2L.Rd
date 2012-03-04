@@ -1,12 +1,20 @@
 \name{eV2L}
 \alias{eV2L}
 \title{eV2L}
-\usage{eV2L(energy)}
-\description{Conversion between different units}
-\details{Conversion between different units}
-\value{numeric vector}
-\author{baptiste Auguie}
-\arguments{\item{energy}{numeric vector, energy in eV}}
-
-
+\usage{
+  eV2L(energy)
+}
+\arguments{
+  \item{energy}{energy in eV}
+}
+\description{
+  Unit conversions
+}
+\details{
+  Unit conversions
+}
+\seealso{
+  Other conversion: \code{\link{L2eV}}, \code{\link{L2w}},
+  \code{\link{t2eV}}
+}
 

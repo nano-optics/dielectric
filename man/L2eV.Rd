@@ -1,19 +1,11 @@
 \name{L2eV}
-\alias{eV2L}
 \alias{L2eV}
-\alias{L2w}
-\alias{t2eV}
-\alias{w2L}
 \title{L2eV}
 \usage{
   L2eV(wavelength)
 }
 \arguments{
-  \item{wavelength}{}
-
-  \item{energy}{}
-
-  \item{time}{}
+  \item{wavelength}{wavelength in m}
 }
 \value{
   converted unit
@@ -24,7 +16,8 @@
 \details{
   Unit conversions
 }
-\author{
-  baptiste Auguié
+\seealso{
+  Other conversion: \code{\link{eV2L}}, \code{\link{L2w}},
+  \code{\link{t2eV}}
 }
 
