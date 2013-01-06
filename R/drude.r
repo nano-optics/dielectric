@@ -33,7 +33,7 @@ drude <- function(wavelength, omega=NULL, p=c(1e16, 1e14, 1),
 ##' @export
 fitDrude <- function(p, material, ...){
    
-  res <- drude(material$wavelength*1e-6, omega_p=p[1], gamma_p=p[2], epsilon_inf=p[3], ...)
+  res <- drude(material$wavelength*1e-9, omega_p=p[1], gamma_p=p[2], epsilon_inf=p[3], ...)
 
   sos.real <- sum((Re(res$epsilon) - Re(material$epsilon))^2) / sum(Re(material$epsilon)^2)
   sos.imag <- sum((Im(res$epsilon) - Im(material$epsilon))^2) / sum(Im(material$epsilon)^2)

@@ -4,7 +4,7 @@ library(ggplot2)
 data(AuJC)
 
 
-AuJC$set_span(0.3, 0.8)
+AuJC$set_span(300, 800)
 raw <- dielectric2plot(AuJC$raw())
 silver <- AuJC$predict(n=300, all.knots=TRUE)
 

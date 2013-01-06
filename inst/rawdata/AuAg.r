@@ -1,5 +1,5 @@
-
-AuJC_raw <- data.frame(wavelength = c(1.93849485018727, 1.61121649885695, 1.39397382485376, 1.21631049423515, 
+require(dielectric)
+AuJC_raw <- data.frame(wavelength = 1e3*c(1.93849485018727, 1.61121649885695, 1.39397382485376, 1.21631049423515, 
 1.08827781063145, 0.984632304857024, 0.89254439145313, 0.821613711337649, 
 0.756485795195031, 0.704907218249915, 0.659913140489282, 0.617232191104403, 
 0.582458546535141, 0.548954293858341, 0.521275926100777, 0.49625468164794, 
@@ -27,11 +27,11 @@ AuJC_raw <- data.frame(wavelength = c(1.93849485018727, 1.61121649885695, 1.3939
 ))
 
 comment(AuJC_raw) <- c(source = "Gold in the visible, Johnson and Christy", 
-                                units = "microns")
+                                units = "nanometres")
 
 AuJC <- with(AuJC_raw, new("dielectric", wavelength=wavelength, epsilon=epsilon, span=range(wavelength), comment=as.list(comment(AuJC_raw))))
 
-AgPalik_raw <- data.frame(wavelength=c(0.000124, 0.000155, 0.0002066, 0.000248, 0.0002755, 0.0003099, 
+AgPalik_raw <- data.frame(wavelength=1e3*c(0.000124, 0.000155, 0.0002066, 0.000248, 0.0002755, 0.0003099, 
 0.0003444, 0.0003542, 0.0004133, 0.0004959, 0.0006199, 0.0008265, 
 0.00124, 0.00155, 0.001675, 0.002066, 0.00248, 0.003099, 0.003351, 
 0.003542, 0.004133, 0.004428, 0.004768, 0.005166, 0.005635, 0.006199, 
@@ -137,6 +137,9 @@ epsilon=c(0.998000999998336+0.00000257742i, 0.999999999991473+0.00000584i,
 ))
 
 
-comment(AgPalik_raw) <- c(source = "Silver in the visible, Palik", units = "microns")
+comment(AgPalik_raw) <- c(source = "Silver in the visible, Palik", units = "nanometres")
 
 AgPalik <- with(AgPalik_raw, new("dielectric", wavelength=wavelength, epsilon=epsilon, span=range(wavelength), comment=as.list(comment(AgPalik_raw))))
+
+save(AuJC, file="AuJC.rda")
+save(AgPalik , file="AgPalik.rda")
