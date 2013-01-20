@@ -1,3 +1,5 @@
 export(dielectric2plot)
 export(drude)
+export(epsAg)
+export(epsAu)
 export(fitDrude)
