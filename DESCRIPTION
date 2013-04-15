@@ -11,7 +11,7 @@ Authors@R: person("Baptiste", "Auguie", email = "baptiste.auguie@gmail.com",
     source listed in the help file.")
 Description: Physical constants. Gold, silver and glass permittivities,
     together with spline interpolation functions.
-Version: 0.2.1
+Version: 0.2.2
 Date: 2012-03-04
 Depends:
     R (>= 2.13),
