@@ -3,9 +3,9 @@ library(ggplot2)
 
 data(AgPalik)
 
-AgPalik$set_span(300, 800)
+AgPalik$set_span(200, 800)
 raw <- dielectric2plot(AgPalik$raw())
-silver <- AgPalik$predict(n=300, all.knots=TRUE)
+silver <- AgPalik$predict(n=300, all.knots=TRUE, df=200)
 
 d <- dielectric2plot(silver)
 

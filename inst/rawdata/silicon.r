@@ -1,5 +1,5 @@
 require(dielectric)
-setwd("/Users/auguieba/Documents/r/github/dielectric/inst/rawdata/")
+setwd("~/Documents/github/dielectric/inst/rawdata")
 ## test <- read.table("CRYSTALS_a-Si_sopra_asi.txt", head=TRUE)
 ## test <- transform(test, epsilon = complex(real = n,  imag = k)^2,  wavelength=lambda*1e3)
 ## dput(test[, c("wavelength", "epsilon")])
