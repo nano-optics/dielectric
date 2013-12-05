@@ -1,16 +1,16 @@
-\name{fitDrude}
-\alias{fitDrude}
-\title{fitFDrude}
+\name{fit_drude}
+\alias{fit_drude}
+\title{fit_drude}
 \usage{
-  fitDrude(p, material, ...)
+  fit_drude(p, material, ...)
 }
 \arguments{
   \item{p}{parameters vector (3)}
 
-  \item{material}{data.frame with wavelength in microns and
+  \item{material}{data.frame with wavelength in nm and
   complex epsilon}
 
-  \item{...}{passed to Drude}
+  \item{...}{passed to drude}
 }
 \value{
   sum of squares
