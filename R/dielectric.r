@@ -24,6 +24,10 @@ dielectric <- setRefClass("dielectric",
                                      imag=smooth.spline(wavelength, Im(epsilon), ...))
                               invisible(sp)
                             },
+                            fun = function(wavelength, ...) {
+                              'returns a continuous function of the wavelength'
+                              predict(new.wavelength=wavelength, ...)
+                            },
                             raw = function(range=span){
                               'return the raw data as real numbers'
                             subset(data.frame(wavelength=wavelength,
