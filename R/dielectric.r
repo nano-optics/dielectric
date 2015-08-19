@@ -60,7 +60,7 @@ dielectric <- setRefClass("dielectric",
                                            epsilon = complex(real=stats::predict(sp$real,
                                                                new.wavelength)$y,
                                              imag=stats::predict(sp$imag, new.wavelength)$y))
-                              invisible(smooth)
+                              return(smooth)
                             }
                             ))
 
