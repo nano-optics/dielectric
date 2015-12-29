@@ -11,8 +11,6 @@ dielectric2plot <- function(m){
   dwide <- with(m, data.frame(wavelength,
                               real=Re(epsilon),
                               imag=Im(epsilon)))
-  ## require(plyr)
-  ## melt(dwide, id="wavelength")
 
   m <- 
     reshape(dwide, varying = c("real", "imag"),
