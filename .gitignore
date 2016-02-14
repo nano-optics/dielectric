@@ -2,3 +2,6 @@
 .DS_Store
 .Rhistory
 inst/.svn/entries
+
+data/.Rapp.history
+.Rproj.user
