@@ -4,6 +4,7 @@ License: GPL-3
 Title: Defines some physical constants and dielectric functions
     commonly used in nano-optics
 URL: https://github.com/baptiste/dielectric
+BugReports: https://github.com/baptiste/dielectric/issues
 DOI: http://dx.doi.org/10.5281/zenodo.11420
 Type: Package
 LazyLoad: yes
