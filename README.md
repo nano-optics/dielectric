@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/baptiste/dielectric.svg?branch=v0.2.3)](https://travis-ci.org/baptiste/dielectric) ![](http://www.r-pkg.org/badges/version/dielectric) ![](http://cranlogs.r-pkg.org/badges/grand-total/dielectric)
+[![Build Status](https://travis-ci.org/plasmonics/dielectric.svg?branch=v0.2.3)](https://travis-ci.org/plasmonics/dielectric) ![](http://www.r-pkg.org/badges/version/dielectric) ![](http://cranlogs.r-pkg.org/badges/grand-total/dielectric)
 
 Defines some physical constants and dielectric functions commonly used in nano-optics
 
