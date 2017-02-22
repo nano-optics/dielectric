@@ -3,19 +3,37 @@ templates:
     bootswatch: lumen
 
 reference:
-  - title: alpha
-    desc:  Polarisability
+  - title: Analytical models
+    desc:  Analytical models
     contents:
-    - starts_with("alpha_")
-    - init_site
-  - title: cluster
-    desc:  Cluster
+    - clausius_mossotti
+    - drude
+    - epsAg
+    - epsAu
+  - title: conversions
+    desc:  Conversions between units
     contents:
-    - starts_with("cluster_")
-    - init_site
-  - title: spectrum
-    desc:  Spectrum
+    - L2eV
+    - eV2L
+    - L2w
+    - t2eV
+  - title: Data sets
+    desc:  Tabulated data sets
     contents:
-    - starts_with("spectrum_")
-    - init_site
+    - AgPalik
+    - AuJC
+  - title: Dielectric
+    desc:  Methods for dielectric class
+    contents:
+    - spline
+    - fun
+    - raw
+    - permittivity
+    - predict
+  - title: Convenience functions
+    desc:  Misc. wrappers
+    contents:
+    - fit_drude
+    - epsilon_qd
+    - dielectric2plot
     

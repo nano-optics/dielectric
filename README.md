@@ -1,7 +1,10 @@
 
 [![Build Status](https://travis-ci.org/plasmonics/dielectric.svg?branch=v0.2.3)](https://travis-ci.org/plasmonics/dielectric) ![](http://www.r-pkg.org/badges/version/dielectric) ![](http://cranlogs.r-pkg.org/badges/grand-total/dielectric)
 
-Defines some physical constants and dielectric functions commonly used in nano-optics
+Package dielectric
+------------------
+
+This R package defines some physical constants and dielectric functions commonly used in nano-optics. It uses a custom class (based on Reference Classes) with methods to interpolate and plot experimental dielectric functions tabulated in the literature. Other convenience functions are defined for analytical models, as well as some physical constants and conversion between common units.
 
 ### License
 
