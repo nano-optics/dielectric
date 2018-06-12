@@ -1,0 +1,337 @@
+---
+title: "Multi-dimensional averaging of simulated spectra"
+author: "baptiste"
+date: "9/14/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, 
+                      fig.width = 7, fig.height = 3,
+                      fig.align = 'centre',
+                      warning=FALSE, cache=TRUE, fig.path = 'avgeraging-figs/')
+library(cda)
+library(cubature)
+library(egg)
+library(tidyr)
+library(purrr)
+library(dplyr)
+library(tibble)
+library(dielectric)
+data(AuJC)
+
+```
+
+## Model spectrum
+
+We suppose that we have a model available that returns a simulated spectrum for a given set of (scalar) parameters. For this example we will focus on the simulated spectrum of a dimer of gold nanorods, represented as prolate ellipsoids. The parameters that we seek to model as a continuous distribution are the following
+
+- particle volume, given by equivalent-sphere radius $a_0$
+- particle aspect ratio $h$
+- relative distance $d$
+- dihedral angle $\theta$
+
+We will keep the other two angles fixed, for simplicity.
+
+```{r model, fig.width=5}
+
+wavelength <- seq(400, 800, length=200)
+gold <- epsAu(wavelength = wavelength)
+
+## convert equivalent radius and aspect ratio to sizes a,b,c
+ellipsoid <- function(a0 = 5, h = 2){
+  
+  V <- 4/3*pi * a0^3
+  c <- b <- a0/(h^(1/3))
+  a <- h*c
+  data.frame(a=a, b=b, c=c)
+  
+}
+
+model <- function(a0 = 20, h = 2, d = 100, theta = pi/4, material = gold, ...){
+  
+  particle <- ellipsoid(a0, h)
+  cl <- cluster_dimer(d = d, 
+                      a=particle$a, 
+                      b=particle$b, 
+                      c=particle$c, 
+                      dihedral = theta)
+  cda::spectrum_oa(cl, material = material, ...)
+  
+}
+
+d <- model()
+
+ggplot(d, aes(wavelength, value, color=variable)) + 
+  facet_grid(type~., scales="free") + geom_line() + 
+  labs(x = "Wavelength /nm", y = expression(sigma/nm^2), colour = "") +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_colour_brewer(palette="Set1", labels=parse(text=c('sigma[ext]','sigma[abs]','sigma[sca]'))) 
+
+```
+
+## Naive averaging over one uniformly-distributed parameter
+
+We first consider a simplified case of one-dimensional averaging, with dihedral angle uniformly distributed over [0, pi/2]. We run it for multiple parameters, and compare to the average.
+
+
+```{r model1}
+library(purrr)
+library(tidyr)
+library(tibble)
+
+model <- function(a0 = 20, h = 2, d = 100, theta = pi/4, material = gold, ...){
+  
+  particle <- ellipsoid(a0, h)
+  cl <- cluster_dimer(d = d, 
+                      a=particle$a, 
+                      b=particle$b, 
+                      c=particle$c, 
+                      dihedral = theta)
+  cda::spectrum_oa(cl, material = material, ...)
+  
+}
+
+
+params <- crossing(theta = seq(0,pi/2,length=10))
+
+all <- params %>% 
+  mutate(tmp = pmap(., .f = model)) %>% 
+  unnest() 
+
+
+naive <- all %>% group_by(wavelength, type, variable) %>% summarise(value = mean(value))
+
+wrap_model <- function(p, material=gold, ...){
+  res <- model(theta=p, material = material, ...)
+  # interleave ext and dichroism to use 'paired' norm
+  c(matrix(res$value[res$variable == "extinction"], nrow=2, byrow= TRUE))
+}
+
+tmp <- adaptIntegrate(wrap_model, lowerLimit = 0, upperLimit = pi/2, 
+                      tol=1e-3, maxEval = 300, norm = "PAIRED",
+                      fDim = 2*nrow(gold))
+
+quadrature <- tibble(wavelength = rep(gold$wavelength, each = 2),
+                     value = tmp$integral / (pi/2), 
+                     type = rep(c("cross-section", "dichroism"), nrow(gold)),
+                     variable = "extinction")
+
+ggplot(subset(all, variable=="extinction"), aes(wavelength, value, group=theta,color=(theta))) + 
+  facet_wrap(~type, scales="free") + geom_line() + 
+  geom_line(data=subset(naive, variable=="extinction"), aes(wavelength, value),lty=2, inherit.aes = FALSE) +
+  geom_line(data=quadrature, aes(wavelength, value),lty=2, col="red", inherit.aes = FALSE) +
+  labs(x = "Wavelength /nm", y = expression(sigma/nm^2), colour = "") +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_color_distiller(palette = "BrBG") + theme_grey()
+
+```
+
+## One-dimensional averaging with a distribution
+
+```{r model2}
+
+weight <- function(theta){
+  dnorm(theta, mean = pi/4, sd = 0.2)
+}
+
+tibble(theta = seq(0,pi/2,length=100)) %>% 
+  mutate(p = weight(theta)) %>%
+  ggplot(aes(theta, p)) + geom_line()
+
+## check that the area is 1
+integrate(weight, -Inf, Inf)
+## also trueish in the interval of interest
+integrate(weight, 0, pi/2)
+
+wrap_model <- function(p, material=gold, ...){
+  res <- model(theta=p, material = material, ...)
+  w <- weight(p)
+  c(matrix(res$value[res$variable == "extinction"] * w, nrow=2, byrow= TRUE))
+}
+
+tmp <- pcubature(wrap_model, lowerLimit = 0, upperLimit = pi/2,  
+                 tol=1e-3, maxEval = 300, norm = "PAIRED",
+                 fDim = 2*nrow(gold) )
+
+quadrature <- tibble(wavelength = rep(gold$wavelength, each=2),
+                     value = tmp$integral, 
+                     type = rep(c("cross-section", "dichroism"), nrow(gold)),
+                     variable = "extinction")
+
+
+ggplot(subset(all, variable=="extinction"), aes(wavelength, value, group=theta,color=(theta))) + 
+  facet_wrap(~type, scales="free") + geom_line() + 
+  geom_line(data=subset(naive, variable=="extinction"), aes(wavelength, value),lty=2, inherit.aes = FALSE) +
+  geom_line(data=quadrature, aes(wavelength, value),lty=2, col="red", inherit.aes = FALSE) +
+  labs(x = "Wavelength /nm", y = expression(sigma/nm^2), colour = "") +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_color_distiller(palette = "BrBG") + theme_grey()
+
+```
+
+
+## Infinite intervals
+
+If the range of integration is infinite, it is best to [transform the integrand](https://github.com/stevengj/cubature#infinite-intervals). We consider this time integration over the parameter $d$, ranging from 50nm to infinity, with a lognormal distribution.
+
+
+```{r lognormal}
+
+weight <- function(d){
+  dlnorm(d, meanlog = 6, sdlog = 1)
+}
+
+tibble(d = seq(0,1e3,length=500)) %>% 
+  mutate(p = weight(d)) %>%
+  ggplot(aes(d, p)) + geom_line()
+
+## check that the area is 1
+integrate(weight, 0, Inf)
+```
+
+The integrand is now multiplied by the weights but also the Jacobian of the transformation.
+
+```{r model3}
+
+wrap_model <- function(t, material=gold, ...){
+  
+  # transform 0-Inf to 0-1
+  # p = t/(1-t)
+  # Jac = 1 / (1-t)^2
+  d <-  t/(1-t)
+  Jac <- 1/(1-t)^2
+  res <- model(d = d, material = material, ...)
+    c(matrix(res$value[res$variable == "extinction"]* Jac * weight(d), 
+             nrow=2, byrow= TRUE))
+
+}
+
+tmp <- adaptIntegrate(wrap_model, lowerLimit = 0, upperLimit = 1,  
+                      tol=1e-3, maxEval = 300, norm = "PAIRED",
+                      fDim = 2*nrow(gold) )
+
+quadrature <- tibble(wavelength = rep(gold$wavelength, each=2),
+                     value = tmp$integral, 
+                     type = rep(c("cross-section", "dichroism"), nrow(gold)),
+                     variable = "extinction")
+
+params2 <- crossing(d = seq(100, 1000, by=100))
+
+all2 <- params2 %>% 
+  mutate(tmp = pmap(., .f = model)) %>% 
+  unnest() 
+
+ggplot(subset(all2, variable=="extinction"), aes(wavelength, value, group=d,color=(d))) + 
+  facet_wrap(~type, scales="free") + geom_line() + 
+  geom_line(data=quadrature, aes(wavelength, value),lty=2, col="red", inherit.aes = FALSE) +
+  labs(x = "Wavelength /nm", y = expression(sigma/nm^2), colour = "") +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_color_distiller(palette = "BrBG") + theme_grey()
+```
+
+## Multi-dimensional averaging
+
+The steps are identical; we could make the necessary transformation(s) for variables that have an infinite integration range, and form the integrand with the corresponding Jacobian(s). For this example, however, with parameters distributions characterised by relatively narrow supports, it seems preferable to avoid this transformation, which would otherwise require too many function calls.
+
+
+```{r weights, fig.height=2}
+
+weight_a0 <- function(a0, mean=20, sd=2){
+  dnorm(a0, mean = mean, sd = sd)
+}
+
+weight_h <- function(h, mean=2, sd=0.2){
+  dnorm(h, mean = mean, sd = sd)
+}
+
+weight_d <- function(d, mean=5, sd=0.2){
+  dlnorm(d, mean = mean, sd = sd)
+}
+
+weight_theta <- function(theta, mean=pi/4, sd=pi/10){
+  dnorm(theta, mean = mean, sd = sd)
+}
+
+test_var <- function(fun = weight_a0, mean=20, sd=2, xlim=c(0, mean+5*sd)){
+  tibble(x = seq(xlim[1],xlim[2],length=100)) %>% 
+    mutate(p = fun(x, mean, sd)) %>%
+    ggplot(aes(x, p)) + geom_line() +
+    ggtitle(gsub("weight_", "", deparse(substitute(fun))))
+}
+
+pa0 <- test_var(weight_a0, 20, 2)
+ph <- test_var(weight_h, 2, 0.2)
+pd <- test_var(weight_d, 5, 0.2, xlim=c(0, 300))
+ptheta <- test_var(weight_theta, pi/4, pi/10)
+
+ggarrange(pa0, ph, pd, ptheta, nrow=1)
+
+```
+
+```{r gridn}
+params_n <- crossing(d = seq(100, 500, by=100),
+                     theta = seq(0, pi/4, length=5),
+                     a0 = seq(15, 25, by=5),
+                     h = seq(1.5, 2.5, by=0.5))
+
+gold2 <- epsAu(wavelength = seq(500, 800, length=100))
+
+all_n <- params_n %>% 
+  mutate(tmp = pmap(., .f = model)) %>% 
+  unnest() 
+
+p <- 
+  ggplot(subset(all_n, variable=="extinction" & type == "dichroism" & wavelength > 500), 
+         aes(wavelength, value, group=interaction(theta, h),
+             color=factor(theta), linetype=factor(h))) + 
+  facet_wrap( ~a0 +d, scales="free", ncol=5) + 
+  geom_line() +
+  labs(x = "Wavelength /nm", y = expression(sigma/nm^2), colour = "") +
+  scale_x_continuous(expand=c(0,0))  + theme_grey() +
+  theme(strip.text = element_blank(), legend.position = "none", 
+        axis.text = element_blank(), axis.ticks = element_blank())
+
+egg::symmetrise_scale(p, axis = "y")
+```
+
+
+```{r modeln}
+wrap_model_n <- function(t, material = gold2, ...){
+  
+  a0 <-  t[1]
+  h <-  t[2]
+  d <-  t[3]
+  theta <-  t[4]
+  
+  w <- weight_a0(a0) * weight_h(h) * weight_d(d) * weight_theta(theta)
+  
+  res <- model(a0 = a0, h = h, d = d, theta = theta, material = material, ...)
+  c(matrix(res$value[res$variable == "extinction"] * w, nrow=2, byrow= TRUE))
+}
+
+
+tmp <- adaptIntegrate(wrap_model_n, 
+                      lowerLimit = c(0, 0, 0, 0), 
+                      upperLimit = c(30, 3, 300, pi/2),  
+                      tol=1e-3, maxEval = 300, norm = "PAIRED",
+                      material = gold2,
+                      fDim = 2*nrow(gold2) )
+
+quadrature <- tibble(wavelength = rep(gold2$wavelength, each=2),
+                     value = tmp$integral, 
+                     type = rep(c("cross-section", "dichroism"), nrow(gold2)),
+                     variable = "extinction")
+
+nominal <- model(a0 = 20, h = 2, d = 150, theta=pi/4)
+
+ggplot(subset(nominal, variable=="extinction"), aes(wavelength, value)) + 
+  facet_wrap(~type, scales="free", nrow=1) + 
+  geom_line() +
+  geom_line(data=subset(quadrature, variable=="extinction" ), 
+            aes(wavelength, value), lty=2, inherit.aes = FALSE) +
+  labs(x = "Wavelength /nm", y = expression(sigma/nm^2), colour = "") +
+  scale_x_continuous(expand=c(0,0))  + theme_grey() 
+
+```
+
