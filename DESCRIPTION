@@ -9,10 +9,10 @@ DOI: http://dx.doi.org/10.5281/zenodo.11420
 Type: Package
 LazyLoad: yes
 LazyData: yes
-
-Authors@R: c(person("Baptiste", "Auguie",
+Authors@R: person("Baptiste", "Auguie",
     email = "baptiste.auguie@gmail.com",
-    role = c("aut", "cre"), comment = c(ORCID="0000-0002-2749-5715","the data have their original source listed in the help file."))
+    role = c("aut", "cre"), comment = c(ORCID="0000-0002-2749-5715",
+    "the data have their original source listed in the help file."))
 Description: Physical constants. Gold, silver and glass permittivities,
     together with spline interpolation functions.
 Version: 0.2.3
