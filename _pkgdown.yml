@@ -1,39 +1,4 @@
-templates:
-  params:
-    bootswatch: lumen
+url: ~
+template:
+  bootstrap: 5
 
-reference:
-  - title: Analytical models
-    desc:  Analytical models
-    contents:
-    - clausius_mossotti
-    - drude
-    - epsAg
-    - epsAu
-  - title: conversions
-    desc:  Conversions between units
-    contents:
-    - L2eV
-    - eV2L
-    - L2w
-    - t2eV
-  - title: Data sets
-    desc:  Tabulated data sets
-    contents:
-    - AgPalik
-    - AuJC
-  - title: Dielectric
-    desc:  Methods for dielectric class
-    contents:
-    - spline
-    - fun
-    - raw
-    - permittivity
-    - predict
-  - title: Convenience functions
-    desc:  Misc. wrappers
-    contents:
-    - fit_drude
-    - epsilon_qd
-    - dielectric2plot
-    

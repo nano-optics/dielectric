@@ -3,22 +3,23 @@ Maintainer: Baptiste Auguie <baptiste.auguie@gmail.com>
 License: GPL-3
 Title: Defines some physical constants and dielectric functions
     commonly used in nano-optics
-URL: https://github.com/plasmonics/dielectric
-BugReports: https://github.com/plasmonics/dielectric/issues
+URL: https://github.com/nano-optics/dielectric
+BugReports: https://github.com/nano-optics/dielectric/issues
 DOI: http://dx.doi.org/10.5281/zenodo.11420
 Type: Package
 LazyLoad: yes
 LazyData: yes
 Authors@R: person("Baptiste", "Auguie",
-    email = "baptiste.auguie@gmail.com",
-    role = c("aut", "cre"), comment = c(ORCID="0000-0002-2749-5715",
+    email = "baptiste.auguie@vuw.ac.nz",
+    role = c("aut", "cre"), comment = c("ORCID"="0000-0002-2749-5715",
     "the data have their original source listed in the help file."))
 Description: Physical constants. Gold, silver and glass permittivities,
     together with spline interpolation functions.
-Version: 0.2.3
-Date: 2012-03-04
+Version: 0.2.4
 Depends:
     R (>= 2.13),
     methods
 Suggests:
     ggplot2
+RoxygenNote: 7.2.1
+Encoding: UTF-8

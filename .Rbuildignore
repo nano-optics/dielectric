@@ -5,3 +5,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 rawdata/
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+README.rmd
+README.md
+icon.png

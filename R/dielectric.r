@@ -14,7 +14,9 @@ dielectric <- setRefClass("dielectric",
                             ##'
                             ##' spline interpolation of permittivity
                             ##' @title spline
-                            ##' @param ... 
+                            ##' @param ... optional arguments passed to smooth.spline
+                            ##' @importFrom stats predict
+                            ##' @importFrom methods new
                             ##' @return list
                             ##' @author baptiste Auguie
                             spline = function(...) {

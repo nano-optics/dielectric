@@ -9,19 +9,8 @@
 ##' @export
 ##' @family user_level utility
 ##' @author baptiste Auguie
-clausius_mossotti <- function(alpha =1, N=1e-1)
+clausius_mossotti <- function(alpha =1, N=1e-1){
   (2*N*alpha + 1) / (1 - N*alpha)
+}
 
-##' epsilon_qd
-##'
-##' dielectric function representing a quantum dot
-##' @title epsilon_qd
-##' @param wavelength in nm
-##' @param ... passed to polarizability_dye
-##' @return dielectric function
-##' @export
-##' @family user_level utility polarizability
-##' @author baptiste Auguie
-epsilon_qd <- function(wavelength, ...)
-  clausius_mossotti(polarizability_dye(wavelength, ...))
 

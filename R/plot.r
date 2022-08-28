@@ -8,15 +8,8 @@
 ##' @export
 dielectric2plot <- function(m){
 
-  dwide <- with(m, data.frame(wavelength,
-                              real=Re(epsilon),
-                              imag=Im(epsilon)))
-
-  m <- 
-    reshape(dwide, varying = c("real", "imag"),
-            v.names="value", timevar="variable", 
-            direction="long")
-  m$variable <- factor(m$variable, labels=c("real", "imag"))
-  m
+  data.frame(wavelength = rep(m$wavelength, 2),
+             value = c(Re(m$epsilon), Im(m$epsilon)),
+             variable = rep(c("real", "imag"), each=length(m$wavelength)))
 
 }
